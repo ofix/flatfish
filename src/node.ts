@@ -25,9 +25,17 @@ enum ELEMENT_TYPE{
      protected movable:boolean;
      protected show:boolean;
      protected visible:boolean;
+     protected background_color:string; // 背景颜色
+     protected foreground_color:string; // 前景颜色
+     protected font_size:number; // 字体大小
+     protected zoom:number; // 放大系数
      constructor(x:number,y:number){
          this.x = x;
          this.y = y;
+         this.zoom = 1;
+         this.font_size = 16;
+         this.background_color = '#FFF';
+         this.foreground_color = '#000';
          this.type = ELEMENT_TYPE.UNKNOWN;
      }
      moveTo(toX:number,toY:number){
