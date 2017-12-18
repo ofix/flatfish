@@ -12,18 +12,15 @@
  * @Date      2017/12/15
  * @Time      14:31
  */
-/// <reference path="node.ts"/>
-/// <reference path="context.ts"/>
 namespace core {
-    export class CTextNode extends CNode {
-        text: string;
-        constructor(x: number = 10, y: number = 10, text: string = '') {
-            super(x, y);
-            this.type = TYPE.TEXT;
-            this.text = text;
+    export class Context{
+        container:string;
+        constructor(container) {
+            this.container = container;
         }
-        draw() {
+        static init():boolean{
 
+            return true;
         }
     }
 }
