@@ -1,34 +1,44 @@
-/*
- * This file is part of FlatFish.
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the MIT-LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @author    code lighter
- * @copyright https://github.com/ofix
- * @qq        981326632
- * @license   http://www.opensource.org/licenses/mit-license.php MIT License
- * @Date      2017/12/15
- * @Time      14:31
- */
-var core;
-(function (core) {
+var Core;
+(function (Core) {
     var TYPE;
     (function (TYPE) {
         TYPE[TYPE["UNKNOWN"] = 0] = "UNKNOWN";
         TYPE[TYPE["TEXT"] = 1] = "TEXT";
-    })(TYPE = core.TYPE || (core.TYPE = {}));
-    var CNode = /** @class */ (function () {
+    })(TYPE = Core.TYPE || (Core.TYPE = {}));
+    var CNode = (function () {
         function CNode(x, y) {
+            this.type = TYPE.UNKNOWN;
             this.x = x;
             this.y = y;
-            this.zoom = 1;
+            this.zoom = 1.0;
             this.font_size = 16;
-            this.background_color = '#FFF';
-            this.foreground_color = '#000';
-            this.type = TYPE.UNKNOWN;
+            this.bg_clr = '#FFF';
+            this.fg_clr = '#000';
         }
+        CNode.prototype.setFontSize = function (fontSize) {
+            this.font_size = fontSize;
+        };
+        CNode.prototype.getFontSize = function () {
+            return this.font_size;
+        };
+        CNode.prototype.setBackClr = function (clr) {
+            this.bg_clr = clr;
+        };
+        CNode.prototype.setFrontClr = function (clr) {
+            this.fg_clr = clr;
+        };
+        CNode.prototype.getBackClr = function () {
+            return this.bg_clr;
+        };
+        CNode.prototype.getFrontClr = function () {
+            return this.fg_clr;
+        };
+        CNode.prototype.zoomIn = function (factor) {
+            this.zoom *= factor;
+        };
+        CNode.prototype.zoomOut = function (factor) {
+            this.zoom /= factor;
+        };
         CNode.prototype.moveTo = function (toX, toY) {
             this.x = toX;
             this.y = toY;
@@ -57,5 +67,6 @@ var core;
         };
         return CNode;
     }());
-    core.CNode = CNode;
-})(core || (core = {}));
+    Core.CNode = CNode;
+})(Core || (Core = {}));
+//# sourceMappingURL=node.js.map

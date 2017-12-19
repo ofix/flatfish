@@ -12,15 +12,35 @@
  * @Date      2017/12/15
  * @Time      14:31
  */
-namespace core {
+namespace Core {
     export class Context{
-        container:string;
-        constructor(container) {
-            this.container = container;
+        id:string;
+        canvas:HTMLCanvasElement;
+        render2D:CanvasRenderingContext2D;
+        width:number;
+        height:number;
+        constructor(id:string,width:number,height:number) {
+            this.id = id;
+            this.width = width;
+            this.height = height;
         }
-        static init():boolean{
-
-            return true;
+        getRender2D(){
+            return this.render2D;
+        }
+        createCanvas(width: number, height: number): void {
+            this.canvas = <HTMLCanvasElement>document.getElementById(this.id);
+            this.canvas.width = width;
+            this.canvas.height = height;
+            document.body.appendChild(this.canvas);
+        }
+        clear(){
+            this.render2D.fillStyle = "#FFF";
+            this.render2D.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+        bootstrap(){
+            this.createCanvas(this.width,this.height);
+            this.render2D = this.canvas.getContext("2d");
+            this.clear();
         }
     }
 }

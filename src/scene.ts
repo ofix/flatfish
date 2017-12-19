@@ -13,24 +13,24 @@
  * @Time      14:31
  */
 
-/// <reference path="textnode.ts"/>
-namespace core {
-    class CTree {
+/// <reference path="text_node.ts"/>
+namespace Core {
+   export class CScene {
         readonly X_SPACE:number = 20;
         readonly Y_SPACE:number = 20;
         protected old_tree: any;
         protected new_tree: any;
         protected old_build_tree: any;
         protected new_build_tree: any;
-        protected tree_nodes:any;
+        protected tree_nodes:CTextNode[];
         protected visit_count:number;
         protected xOldStart:number;
         protected yOldStart:number;
         protected xNewStart:number;
         protected yNewStart:number;
-        constructor(old_tree: any, new_tree: any) {
-            this.old_tree = old_tree;
-            this.new_tree = new_tree;
+        constructor() {
+            this.old_tree = null;
+            this.new_tree = null;
             this.old_build_tree = null;
             this.new_build_tree = null;
             this.tree_nodes = [];
@@ -40,55 +40,50 @@ namespace core {
             this.xNewStart = 0;
             this.yNewStart = 0;
         }
-
-        getLocalOldTree() {
-            this.old_tree = [
-                {
-                    "id": 1, "parent_id": 0, "name": "一级菜单",
-                }, {
-                    "id": 2, "parent_id": 1, "name": "二级菜单1",
-                }, {
-                    "id": 3, "parent_id": 1, "name": "二级菜单2",
-                }, {
-                    "id": 4, "parent_id": 2, "name": "三级菜单1",
-                }
-            ];
-            this.new_tree = [
-                {
-                    "id": 1, "parent_id": 0, "name": "一级菜单",
-                }, {
-                    "id": 2, "parent_id": 1, "name": "二级菜单1",
-                }, {
-                    "id": 3, "parent_id": 1, "name": "二级菜单2",
-                }, {
-                    "id": 4, "parent_id": 2, "name": "三级菜单1",
-                }, {
-                    "id": 5, "parent_id": 2, "name": "三级菜单2",
-                }
-            ];
+        bootstrap(){
+            // 初始化数据
+            this.initLocalOldTree();
+            this.initLocalNewTree();
+            // 将二维数组转化为JSON嵌套数组
+            this.buildOldTree();
+            this.buildNewTree();
+            // 计算每个节点的顺序
+            this.layoutOldTree();
+            this.layoutNewTree();
         }
-
-        layout():void{
-            this.layoutOldBuildTree(0,0);
-            this.layoutNewBuildTree(20,0);
+        draw(){
+            for(let i=0;i<this.tree_nodes.length;i++){
+                this.tree_nodes[i].draw();
+            }
         }
-        layoutOldBuildTree(xStart:number,yStart:number):void{
-            this.old_build_tree.forEach((v,i,a)=>{
+        /*
+         * @func 计算老树的布局
+         */
+        layoutOldTree():void{
+            this.old_build_tree.forEach((v,i)=>{
                 this.visitNode(v,i,true);
             });
         }
-        layoutNewBuildTree(xStart:number,yStart:number):void{
-            this.new_build_tree.forEach((v,i,a)=>{
+        /*
+         * @func 计算新树的布局
+         */
+        layoutNewTree():void{
+            this.new_build_tree.forEach((v,i)=>{
                 this.visitNode(v,i,false);
             });
         }
-
-        visitNode(text:string,level:number,old_tree:boolean=true):void{
+        /*
+         * @func 深度遍历
+         * @para text text节点的内容
+         * @para level int 当前访问的层级
+         * @para is_old_tree 是否是老树
+         */
+        visitNode(text:string,level:number,is_old_tree:boolean=true):void{
             this.visit_count++;
             let ySpace = this.Y_SPACE * this.visit_count;
             let xSpace = this.X_SPACE * level;
-            let x = (old_tree?this.xOldStart:this.xNewStart) + xSpace;
-            let y = (old_tree?this.yOldStart:this.yNewStart) + ySpace;
+            let x = (is_old_tree?this.xOldStart:this.xNewStart) + xSpace;
+            let y = (is_old_tree?this.yOldStart:this.yNewStart) + ySpace;
             let _node = new CTextNode(x,y,text);
             this.tree_nodes.push(_node);
         }
@@ -97,24 +92,20 @@ namespace core {
          * @func 获取老树状菜单的结构
          * @return 老树状菜单JSON数据
          */
-        getOldBuildTree() {
+        buildOldTree() {
             if (this.old_build_tree === null) {
                 this.old_build_tree = this.buildTree(this.old_tree);
-                return this.old_build_tree;
             }
-            return this.old_build_tree;
         }
 
         /*
          * @func 获取新树状菜单的结构
          * @return 新树状菜单JSON数据
          */
-        getNewBuildTree() {
+        buildNewTree() {
             if (this.new_build_tree === null) {
                 this.new_build_tree = this.buildTree(this.new_tree);
-                return this.new_build_tree;
             }
-            return this.new_build_tree;
         }
 
         static is_callable(func): boolean {
@@ -132,7 +123,7 @@ namespace core {
             let tree = [];
             let that: any = this;
             array.forEach((v, k, arr) => {
-                if (v['parent_id'] == parent_id) {
+                if (v['parent_id'] === parent_id) {
                     delete array[k];
                     let tmp = that.is_callable(callback) ? callback.call(this, v) : v;
                     let children = this.buildTree(array, callback, v['id'], child_node);
@@ -144,5 +135,39 @@ namespace core {
             });
             return tree;
         }
+        /*
+         * 初始化老树
+         */
+       initLocalOldTree() {
+           this.old_tree = [
+               {
+                   "id": 1, "parent_id": 0, "name": "一级菜单",
+               }, {
+                   "id": 2, "parent_id": 1, "name": "二级菜单1",
+               }, {
+                   "id": 3, "parent_id": 1, "name": "二级菜单2",
+               }, {
+                   "id": 4, "parent_id": 2, "name": "三级菜单1",
+               }
+           ];
+       }
+       /*
+        * @func 初始化新树
+        */
+       initLocalNewTree(){
+           this.new_tree = [
+               {
+                   "id": 1, "parent_id": 0, "name": "一级菜单",
+               }, {
+                   "id": 2, "parent_id": 1, "name": "二级菜单1",
+               }, {
+                   "id": 3, "parent_id": 1, "name": "二级菜单2",
+               }, {
+                   "id": 4, "parent_id": 2, "name": "三级菜单1",
+               }, {
+                   "id": 5, "parent_id": 2, "name": "三级菜单2",
+               }
+           ];
+       }
     }
 }

@@ -12,7 +12,7 @@
  * @Date      2017/12/15
  * @Time      14:31
  */
-namespace core {
+namespace Core {
     export enum TYPE{
         UNKNOWN = 0,
         TEXT = 1,

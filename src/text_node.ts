@@ -14,7 +14,7 @@
  */
 /// <reference path="node.ts"/>
 /// <reference path="context.ts"/>
-namespace core {
+namespace Core {
     export class CTextNode extends CNode {
         text: string;
         constructor(x: number = 10, y: number = 10, text: string = '') {
@@ -23,7 +23,7 @@ namespace core {
             this.text = text;
         }
         draw() {
-
+            ctx.fillText(this.text,this.x,this.y);
         }
     }
 }
