@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "AMD",
     "target": "es5",
     "outDir": "../dist",
+    "outFile":"../dist/flatfish.js",
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true
