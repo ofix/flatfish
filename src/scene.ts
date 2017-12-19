@@ -18,27 +18,34 @@ namespace Core {
    export class CScene {
         readonly X_SPACE:number = 20;
         readonly Y_SPACE:number = 20;
+        readonly ACTIVE_OLD_TREE:number = 1;
+        readonly ACTIVE_NEW_TREE:number = 2;
+        readonly ACTIVE_NON_TREE:number = -1;
         protected old_tree: any;
         protected new_tree: any;
         protected old_build_tree: any;
         protected new_build_tree: any;
-        protected tree_nodes:CTextNode[];
+        protected old_tree_nodes:CTextNode[];
+        protected new_tree_nodes:CTextNode[];
         protected visit_count:number;
         protected xOldStart:number;
         protected yOldStart:number;
         protected xNewStart:number;
         protected yNewStart:number;
+        protected active_tree:any;
         constructor() {
             this.old_tree = null;
             this.new_tree = null;
             this.old_build_tree = null;
             this.new_build_tree = null;
-            this.tree_nodes = [];
+            this.old_tree_nodes = [];
+            this.new_tree_nodes = [];
             this.visit_count = 0;
             this.xOldStart = 0;
             this.yOldStart = 0;
             this.xNewStart = 0;
             this.yNewStart = 0;
+            this.active_tree = this.ACTIVE_NON_TREE;
         }
         bootstrap(){
             // 初始化数据
@@ -51,9 +58,28 @@ namespace Core {
             this.layoutOldTree();
             this.layoutNewTree();
         }
+        onHitTest(xCursor:number,yCursor:number):void{
+            for(let j=0; j<this.new_tree_nodes.length; j++){
+                let bHit:boolean = this.new_tree_nodes[j].onHitTest(xCursor,yCursor);
+                if(bHit){
+                    this.active_tree = this.ACTIVE_NEW_TREE;
+                    break;
+                }
+            }
+            for(let i=0; i<this.old_tree_nodes.length; i++){
+                let bHit:boolean = this.old_tree_nodes[i].onHitTest(xCursor,yCursor);
+                if(bHit){
+                    this.active_tree = this.ACTIVE_OLD_TREE;
+                    break;
+                }
+            }
+        }
         draw(){
-            for(let i=0;i<this.tree_nodes.length;i++){
-                this.tree_nodes[i].draw();
+            for(let i=0;i<this.old_tree_nodes.length;i++){
+                this.old_tree_nodes[i].draw();
+            }
+            for(let j=0;j<this.new_tree_nodes.length;j++){
+                this.new_tree_nodes[j].draw();
             }
         }
         /*
@@ -85,7 +111,11 @@ namespace Core {
             let x = (is_old_tree?this.xOldStart:this.xNewStart) + xSpace;
             let y = (is_old_tree?this.yOldStart:this.yNewStart) + ySpace;
             let _node = new CTextNode(x,y,text);
-            this.tree_nodes.push(_node);
+            if(is_old_tree){
+                this.old_tree_nodes.push(_node);
+            }else {
+                this.new_tree_nodes.push(_node);
+            }
         }
 
         /*
@@ -119,14 +149,15 @@ namespace Core {
          * @para parent_id 父ID
          * @para child_node 子节点键名
          */
-        buildTree(array:any, callback: any = null, parent_id: number = 0, child_node: string = "children"): any {
+        buildTree(array:any, callback: any = null, parent_id: number = 0, level:number=0,child_node: string = "children"): any {
             let tree = [];
             let that: any = this;
             array.forEach((v, k, arr) => {
                 if (v['parent_id'] === parent_id) {
                     delete array[k];
                     let tmp = that.is_callable(callback) ? callback.call(this, v) : v;
-                    let children = this.buildTree(array, callback, v['id'], child_node);
+                    tmp['level'] = level;
+                    let children = this.buildTree(array, callback, v['id'],level+1, child_node);
                     if (children) {
                         tmp[child_node] = children;
                     }

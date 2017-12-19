@@ -21,6 +21,12 @@ namespace Core {
             super(x, y);
             this.type = TYPE.TEXT;
             this.text = text;
+            this.width = 0;
+            this.height = y;
+        }
+        onHitTest(xCursor:number,yCursor:number):boolean{
+            return (xCursor>=this.x && yCursor>=this.y
+              && xCursor<=(this.x+this.width) && yCursor <= (this.y+this.height));
         }
         draw() {
             ctx.fillText(this.text,this.x,this.y);
