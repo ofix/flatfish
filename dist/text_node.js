@@ -19,8 +19,14 @@ var Core;
             var _this = _super.call(this, x, y) || this;
             _this.type = Core.TYPE.TEXT;
             _this.text = text;
+            _this.width = 0;
+            _this.height = y;
             return _this;
         }
+        CTextNode.prototype.onHitTest = function (xCursor, yCursor) {
+            return (xCursor >= this.x && yCursor >= this.y
+                && xCursor <= (this.x + this.width) && yCursor <= (this.y + this.height));
+        };
         CTextNode.prototype.draw = function () {
             ctx.fillText(this.text, this.x, this.y);
         };
