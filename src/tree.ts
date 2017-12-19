@@ -1,15 +1,44 @@
+/*
+ * This file is part of FlatFish.
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the MIT-LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @author    code lighter
+ * @copyright https://github.com/ofix
+ * @qq        981326632
+ * @license   http://www.opensource.org/licenses/mit-license.php MIT License
+ * @Date      2017/12/15
+ * @Time      14:31
+ */
+
+/// <reference path="textnode.ts"/>
 namespace core {
     class CTree {
-        old_tree: any;
-        new_tree: any;
-        old_build_tree: any;
-        new_build_tree: any;
-
+        readonly X_SPACE:number = 20;
+        readonly Y_SPACE:number = 20;
+        protected old_tree: any;
+        protected new_tree: any;
+        protected old_build_tree: any;
+        protected new_build_tree: any;
+        protected tree_nodes:any;
+        protected visit_count:number;
+        protected xOldStart:number;
+        protected yOldStart:number;
+        protected xNewStart:number;
+        protected yNewStart:number;
         constructor(old_tree: any, new_tree: any) {
             this.old_tree = old_tree;
             this.new_tree = new_tree;
             this.old_build_tree = null;
             this.new_build_tree = null;
+            this.tree_nodes = [];
+            this.visit_count = 0;
+            this.xOldStart = 0;
+            this.yOldStart = 0;
+            this.xNewStart = 0;
+            this.yNewStart = 0;
         }
 
         getLocalOldTree() {
@@ -37,6 +66,31 @@ namespace core {
                     "id": 5, "parent_id": 2, "name": "三级菜单2",
                 }
             ];
+        }
+
+        layout():void{
+            this.layoutOldBuildTree(0,0);
+            this.layoutNewBuildTree(20,0);
+        }
+        layoutOldBuildTree(xStart:number,yStart:number):void{
+            this.old_build_tree.forEach((v,i,a)=>{
+                this.visitNode(v,i,true);
+            });
+        }
+        layoutNewBuildTree(xStart:number,yStart:number):void{
+            this.new_build_tree.forEach((v,i,a)=>{
+                this.visitNode(v,i,false);
+            });
+        }
+
+        visitNode(text:string,level:number,old_tree:boolean=true):void{
+            this.visit_count++;
+            let ySpace = this.Y_SPACE * this.visit_count;
+            let xSpace = this.X_SPACE * level;
+            let x = (old_tree?this.xOldStart:this.xNewStart) + xSpace;
+            let y = (old_tree?this.yOldStart:this.yNewStart) + ySpace;
+            let _node = new CTextNode(x,y,text);
+            this.tree_nodes.push(_node);
         }
 
         /*
