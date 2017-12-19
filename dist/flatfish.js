@@ -219,11 +219,15 @@ var Core;
         CScene.prototype.buildOldTree = function () {
             if (this.old_build_tree === null) {
                 this.old_build_tree = this.buildTree(this.old_tree);
+                console.log(">>>>>>>>>>>>>>>>>old_buld_tree<<<<<<<<<<<<<<<<");
+                console.log(JSON.stringify(this.old_build_tree));
             }
         };
         CScene.prototype.buildNewTree = function () {
             if (this.new_build_tree === null) {
                 this.new_build_tree = this.buildTree(this.new_tree);
+                console.log(">>>>>>>>>>>>>>>>>new_buld_tree<<<<<<<<<<<<<<<<");
+                console.log(JSON.stringify(this.new_build_tree));
             }
         };
         CScene.is_callable = function (func) {
@@ -233,17 +237,16 @@ var Core;
             var _this = this;
             if (callback === void 0) { callback = null; }
             if (parent_id === void 0) { parent_id = 0; }
-            if (level === void 0) { level = 0; }
+            if (level === void 0) { level = 1; }
             if (child_node === void 0) { child_node = "children"; }
             var tree = [];
-            var that = this;
             array.forEach(function (v, k, arr) {
                 if (v['parent_id'] === parent_id) {
                     delete array[k];
-                    var tmp = that.is_callable(callback) ? callback.call(_this, v) : v;
+                    var tmp = CScene.is_callable(callback) ? callback.call(_this, v) : v;
                     tmp['level'] = level;
                     var children = _this.buildTree(array, callback, v['id'], level + 1, child_node);
-                    if (children) {
+                    if (children.length) {
                         tmp[child_node] = children;
                     }
                     tree.push(tmp);
@@ -289,6 +292,7 @@ var FlatFish;
         function CApp(appId) {
             this._bootstrap = false;
             this.appId = appId;
+            this.errors = [];
             this.ctx = new Core.Context(appId, 1024, 1024);
             this.scene = new Core.CScene();
         }
@@ -296,6 +300,7 @@ var FlatFish;
             return this.ctx.getRender2D();
         };
         CApp.prototype.run = function () {
+            var that = this;
             try {
                 this.ctx.bootstrap();
                 this.scene.bootstrap();
@@ -303,7 +308,7 @@ var FlatFish;
             }
             catch (e) {
                 console.log(e);
-                this.errors.push(e);
+                that.errors.push(e);
             }
             this._bootstrap = true;
         };

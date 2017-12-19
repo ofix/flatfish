@@ -24,6 +24,7 @@ namespace FlatFish {
         constructor(appId){
             this._bootstrap = false;
             this.appId = appId;
+            this.errors = [];
             this.ctx = new Core.Context(appId,1024,1024);
             this.scene = new Core.CScene();
         }
@@ -31,13 +32,14 @@ namespace FlatFish {
             return this.ctx.getRender2D();
         }
         run():void{
+            let that = this;
             try{
                 this.ctx.bootstrap();
                 this.scene.bootstrap();
                 this.loop();
             }catch(e){
                 console.log(e);
-                this.errors.push(e);
+                that.errors.push(e);
             }
             this._bootstrap = true;
         }

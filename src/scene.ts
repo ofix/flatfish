@@ -125,6 +125,8 @@ namespace Core {
         buildOldTree() {
             if (this.old_build_tree === null) {
                 this.old_build_tree = this.buildTree(this.old_tree);
+                console.log(">>>>>>>>>>>>>>>>>old_buld_tree<<<<<<<<<<<<<<<<");
+                console.log(JSON.stringify(this.old_build_tree));
             }
         }
 
@@ -135,6 +137,8 @@ namespace Core {
         buildNewTree() {
             if (this.new_build_tree === null) {
                 this.new_build_tree = this.buildTree(this.new_tree);
+                console.log(">>>>>>>>>>>>>>>>>new_buld_tree<<<<<<<<<<<<<<<<");
+                console.log(JSON.stringify(this.new_build_tree));
             }
         }
 
@@ -149,16 +153,15 @@ namespace Core {
          * @para parent_id 父ID
          * @para child_node 子节点键名
          */
-        buildTree(array:any, callback: any = null, parent_id: number = 0, level:number=0,child_node: string = "children"): any {
+        buildTree(array:any, callback: any = null, parent_id: number = 0, level:number=1,child_node: string = "children"): any {
             let tree = [];
-            let that: any = this;
             array.forEach((v, k, arr) => {
                 if (v['parent_id'] === parent_id) {
                     delete array[k];
-                    let tmp = that.is_callable(callback) ? callback.call(this, v) : v;
+                    let tmp = CScene.is_callable(callback) ? callback.call(this, v) : v;
                     tmp['level'] = level;
                     let children = this.buildTree(array, callback, v['id'],level+1, child_node);
-                    if (children) {
+                    if (children.length) {
                         tmp[child_node] = children;
                     }
                     tree.push(tmp);
