@@ -4,9 +4,13 @@
 class CTree{
     old_tree:any;
     new_tree:any;
+    old_build_tree:any;
+    new_build_tree:any;
     constructor(old_tree:any,new_tree:any){
         this.old_tree = old_tree;
         this.new_tree = new_tree;
+        this.old_build_tree = [];
+        this.new_build_tree = [];
     }
     getLocalOldTree(){
         this.old_tree=[
@@ -34,6 +38,12 @@ class CTree{
             }
         ];
     }
+    getOldBuildTree(){
+        this.old_build_tree = this.buildTree(this.old_tree);
+    }
+    getNewBuildTree(){
+        this.new_build_tree = this.buildTree(this.new_tree);
+    }
     static is_callable(func):boolean{
         return (typeof func === "function");
     }
@@ -43,7 +53,7 @@ class CTree{
         array.forEach((v,k,arr)=>{
             if (v['parent_id'] == parent_id) {
                 arr.shift(array[k]);
-                let tmp = that.is_callable(callback) ? call_user_func(callback, v) : v;
+                let tmp = that.is_callable(callback) ? callback.call(this, v) : v;
                 let children = this.buildTree(array, callback, v['id'], child_node);
                 if (children) {
                     tmp[child_node] = children;
