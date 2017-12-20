@@ -23,6 +23,7 @@ var Core;
             this.zoom = 1.0;
             this.font_size = 16;
             this.bg_clr = '#FFF';
+            this.font_family = "宋体";
             this.fg_clr = '#000';
         }
         CNode.prototype.setFontSize = function (fontSize) {
@@ -30,6 +31,12 @@ var Core;
         };
         CNode.prototype.getFontSize = function () {
             return this.font_size;
+        };
+        CNode.prototype.setFontFamily = function (fontFamily) {
+            this.font_family = fontFamily;
+        };
+        CNode.prototype.getFontFamily = function () {
+            return this.font_family;
         };
         CNode.prototype.setBackClr = function (clr) {
             this.bg_clr = clr;
@@ -104,6 +111,7 @@ var Core;
             this.createCanvas(this.width, this.height);
             this.render2D = this.canvas.getContext("2d");
             this.clear();
+            ctx = this.render2D;
         };
         return Context;
     }());
@@ -129,7 +137,17 @@ var Core;
                 && xCursor <= (this.x + this.width) && yCursor <= (this.y + this.height));
         };
         CTextNode.prototype.draw = function () {
+            console.log(this.text, this.x, this.y);
+            ctx.beginPath();
+            ctx.translate(0.5, 0.5);
+            ctx.fillStyle = this.fg_clr;
+            ctx.strokeStyle = this.fg_clr;
+            ctx.font = this.font_size + 'px ' + this.font_family;
+            ctx.textBaseline = "middle";
+            ctx.textAlign = 'left';
             ctx.fillText(this.text, this.x, this.y);
+            ctx.stroke();
+            ctx.closePath();
         };
         return CTextNode;
     }(Core.CNode));
@@ -201,31 +219,38 @@ var Core;
                 _this.visitNode(v, i, false);
             });
         };
-        CScene.prototype.visitNode = function (text, level, is_old_tree) {
+        CScene.prototype.visitNode = function (v, level, is_old_tree) {
+            var _this = this;
             if (is_old_tree === void 0) { is_old_tree = true; }
+            console.log(v['name']);
             this.visit_count++;
             var ySpace = this.Y_SPACE * this.visit_count;
             var xSpace = this.X_SPACE * level;
             var x = (is_old_tree ? this.xOldStart : this.xNewStart) + xSpace;
             var y = (is_old_tree ? this.yOldStart : this.yNewStart) + ySpace;
-            var _node = new Core.CTextNode(x, y, text);
+            var _node = new Core.CTextNode(x, y, v['name']);
             if (is_old_tree) {
                 this.old_tree_nodes.push(_node);
             }
             else {
                 this.new_tree_nodes.push(_node);
             }
+            if (v['children'] && v['children'].length) {
+                v['children'].forEach(function (sub_v) {
+                    _this.visitNode(sub_v, level + 1, is_old_tree);
+                });
+            }
         };
         CScene.prototype.buildOldTree = function () {
             if (this.old_build_tree === null) {
-                this.old_build_tree = this.buildTree(this.old_tree);
+                this.old_build_tree = CScene.buildTree(this.old_tree);
                 console.log(">>>>>>>>>>>>>>>>>old_buld_tree<<<<<<<<<<<<<<<<");
                 console.log(JSON.stringify(this.old_build_tree));
             }
         };
         CScene.prototype.buildNewTree = function () {
             if (this.new_build_tree === null) {
-                this.new_build_tree = this.buildTree(this.new_tree);
+                this.new_build_tree = CScene.buildTree(this.new_tree);
                 console.log(">>>>>>>>>>>>>>>>>new_buld_tree<<<<<<<<<<<<<<<<");
                 console.log(JSON.stringify(this.new_build_tree));
             }
@@ -233,19 +258,19 @@ var Core;
         CScene.is_callable = function (func) {
             return (typeof func === "function");
         };
-        CScene.prototype.buildTree = function (array, callback, parent_id, level, child_node) {
+        CScene.buildTree = function (array, callback, parent_id, level, child_node) {
             var _this = this;
             if (callback === void 0) { callback = null; }
             if (parent_id === void 0) { parent_id = 0; }
             if (level === void 0) { level = 1; }
             if (child_node === void 0) { child_node = "children"; }
             var tree = [];
-            array.forEach(function (v, k, arr) {
+            array.forEach(function (v, k) {
                 if (v['parent_id'] === parent_id) {
                     delete array[k];
                     var tmp = CScene.is_callable(callback) ? callback.call(_this, v) : v;
                     tmp['level'] = level;
-                    var children = _this.buildTree(array, callback, v['id'], level + 1, child_node);
+                    var children = CScene.buildTree(array, callback, v['id'], level + 1, child_node);
                     if (children.length) {
                         tmp[child_node] = children;
                     }
@@ -293,7 +318,10 @@ var FlatFish;
             this._bootstrap = false;
             this.appId = appId;
             this.errors = [];
-            this.ctx = new Core.Context(appId, 1024, 1024);
+            var $app = $('#' + appId);
+            var width = $app.width();
+            var height = $app.height();
+            this.ctx = new Core.Context(appId, width, height);
             this.scene = new Core.CScene();
         }
         CApp.prototype.getContext = function () {
@@ -304,7 +332,7 @@ var FlatFish;
             try {
                 this.ctx.bootstrap();
                 this.scene.bootstrap();
-                this.loop();
+                this.scene.draw();
             }
             catch (e) {
                 console.log(e);
@@ -312,16 +340,11 @@ var FlatFish;
             }
             this._bootstrap = true;
         };
-        CApp.prototype.loop = function () {
-            if (this.errors.length === 0) {
-                this.scene.loop();
-            }
-        };
         return CApp;
     }());
     FlatFish.CApp = CApp;
 })(FlatFish || (FlatFish = {}));
+var ctx;
 var app = new FlatFish.CApp('flatfish');
-var ctx = app.getContext();
 app.run();
 //# sourceMappingURL=flatfish.js.map

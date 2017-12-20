@@ -29,7 +29,17 @@ namespace Core {
               && xCursor<=(this.x+this.width) && yCursor <= (this.y+this.height));
         }
         draw() {
+            console.log(this.text,this.x,this.y);
+            ctx.beginPath();
+            ctx.translate(0.5, 0.5);
+            ctx.fillStyle = this.fg_clr;
+            ctx.strokeStyle = this.fg_clr;
+            ctx.font = this.font_size + 'px '+this.font_family;
+            ctx.textBaseline = "middle";
+            ctx.textAlign = 'left';
             ctx.fillText(this.text,this.x,this.y);
+            ctx.stroke();
+            ctx.closePath();
         }
     }
 }

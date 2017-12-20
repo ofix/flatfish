@@ -29,6 +29,7 @@ namespace Core {
         protected bg_clr: string; // 背景颜色
         protected fg_clr: string; // 前景颜色
         protected font_size: number; // 字体大小
+        protected font_family:string; //字体
         protected zoom: number; // 放大系数
         constructor(x: number, y: number) {
             this.type = TYPE.UNKNOWN;
@@ -37,6 +38,7 @@ namespace Core {
             this.zoom = 1.0;
             this.font_size = 16;
             this.bg_clr = '#FFF';
+            this.font_family="宋体";
             this.fg_clr = '#000';
         }
         setFontSize(fontSize:number){
@@ -44,6 +46,12 @@ namespace Core {
         }
         getFontSize():number{
             return this.font_size;
+        }
+        setFontFamily(fontFamily:string){
+            this.font_family = fontFamily;
+        }
+        getFontFamily():string{
+            return this.font_family;
         }
         setBackClr(clr:string){
           this.bg_clr = clr;

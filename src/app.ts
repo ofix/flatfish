@@ -14,6 +14,7 @@
  */
 /// <reference path="text_node.ts"/>
 /// <reference path="scene.ts"/>
+/// <reference path="jquery.d.ts"/>
 namespace FlatFish {
     export class CApp{
         protected _bootstrap:boolean;
@@ -25,7 +26,10 @@ namespace FlatFish {
             this._bootstrap = false;
             this.appId = appId;
             this.errors = [];
-            this.ctx = new Core.Context(appId,1024,1024);
+            let $app:any = $('#'+appId);
+            let width:number  = $app.width();
+            let height:number = $app.height();
+            this.ctx = new Core.Context(appId,width,height);
             this.scene = new Core.CScene();
         }
         getContext():any{
@@ -36,20 +40,15 @@ namespace FlatFish {
             try{
                 this.ctx.bootstrap();
                 this.scene.bootstrap();
-                this.loop();
+                this.scene.draw();
             }catch(e){
                 console.log(e);
                 that.errors.push(e);
             }
             this._bootstrap = true;
         }
-        loop():void{
-            if(this.errors.length ===0){
-                this.scene.loop();
-            }
-        }
     }
 }
+let ctx:CanvasRenderingContext2D;
 let app = new FlatFish.CApp('flatfish');
-let ctx = app.getContext();
 app.run();

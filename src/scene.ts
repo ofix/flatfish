@@ -98,23 +98,30 @@ namespace Core {
                 this.visitNode(v,i,false);
             });
         }
+        //判断是否是数组
         /*
-         * @func 深度遍历
+         * @func 深度优先遍历
          * @para text text节点的内容
          * @para level int 当前访问的层级
          * @para is_old_tree 是否是老树
          */
-        visitNode(text:string,level:number,is_old_tree:boolean=true):void{
-            this.visit_count++;
-            let ySpace = this.Y_SPACE * this.visit_count;
-            let xSpace = this.X_SPACE * level;
-            let x = (is_old_tree?this.xOldStart:this.xNewStart) + xSpace;
-            let y = (is_old_tree?this.yOldStart:this.yNewStart) + ySpace;
-            let _node = new CTextNode(x,y,text);
-            if(is_old_tree){
-                this.old_tree_nodes.push(_node);
-            }else {
-                this.new_tree_nodes.push(_node);
+         visitNode(v:any,level:number,is_old_tree:boolean=true):void{
+             console.log(v['name']);
+             this.visit_count++;
+             let ySpace = this.Y_SPACE * this.visit_count;
+             let xSpace = this.X_SPACE * level;
+             let x = (is_old_tree ? this.xOldStart : this.xNewStart) + xSpace;
+             let y = (is_old_tree ? this.yOldStart : this.yNewStart) + ySpace;
+             let _node = new CTextNode(x, y, v['name']);
+             if (is_old_tree) {
+                 this.old_tree_nodes.push(_node);
+             } else {
+                 this.new_tree_nodes.push(_node);
+             }
+            if(v['children'] && v['children'].length){
+                v['children'].forEach((sub_v)=>{
+                    this.visitNode(sub_v,level+1,is_old_tree);
+                });
             }
         }
 
@@ -124,7 +131,7 @@ namespace Core {
          */
         buildOldTree() {
             if (this.old_build_tree === null) {
-                this.old_build_tree = this.buildTree(this.old_tree);
+                this.old_build_tree = CScene.buildTree(this.old_tree);
                 console.log(">>>>>>>>>>>>>>>>>old_buld_tree<<<<<<<<<<<<<<<<");
                 console.log(JSON.stringify(this.old_build_tree));
             }
@@ -136,7 +143,7 @@ namespace Core {
          */
         buildNewTree() {
             if (this.new_build_tree === null) {
-                this.new_build_tree = this.buildTree(this.new_tree);
+                this.new_build_tree = CScene.buildTree(this.new_tree);
                 console.log(">>>>>>>>>>>>>>>>>new_buld_tree<<<<<<<<<<<<<<<<");
                 console.log(JSON.stringify(this.new_build_tree));
             }
@@ -153,14 +160,14 @@ namespace Core {
          * @para parent_id 父ID
          * @para child_node 子节点键名
          */
-        buildTree(array:any, callback: any = null, parent_id: number = 0, level:number=1,child_node: string = "children"): any {
+        static buildTree(array:any, callback: any = null, parent_id: number = 0, level:number=1,child_node: string = "children"): any {
             let tree = [];
-            array.forEach((v, k, arr) => {
+            array.forEach((v, k) => {
                 if (v['parent_id'] === parent_id) {
                     delete array[k];
                     let tmp = CScene.is_callable(callback) ? callback.call(this, v) : v;
                     tmp['level'] = level;
-                    let children = this.buildTree(array, callback, v['id'],level+1, child_node);
+                    let children = CScene.buildTree(array, callback, v['id'],level+1, child_node);
                     if (children.length) {
                         tmp[child_node] = children;
                     }
