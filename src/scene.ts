@@ -14,10 +14,13 @@
  */
 
 /// <reference path="text_node.ts"/>
+/// <reference path="jquery.d.ts"/>
+/// <reference path="old_tree.ts"/>
+/// <reference path="new_tree.ts"/>
 namespace Core {
    export class CScene {
         readonly X_SPACE:number = 20;
-        readonly Y_SPACE:number = 20;
+        readonly Y_SPACE:number = 30;
         readonly ACTIVE_OLD_TREE:number = 1;
         readonly ACTIVE_NEW_TREE:number = 2;
         readonly ACTIVE_NON_TREE:number = -1;
@@ -48,15 +51,15 @@ namespace Core {
             this.active_tree = this.ACTIVE_NON_TREE;
         }
         bootstrap(){
-            // 初始化数据
-            this.initLocalOldTree();
-            this.initLocalNewTree();
+           // 初始化数据
+           this.initLocalOldTree();
+           this.initLocalNewTree();
             // 将二维数组转化为JSON嵌套数组
-            this.buildOldTree();
-            this.buildNewTree();
-            // 计算每个节点的顺序
-            this.layoutOldTree();
-            this.layoutNewTree();
+           this.buildOldTree();
+           this.buildNewTree();
+           // 计算每个节点的顺序
+           this.layoutOldTree();
+           this.layoutNewTree();
         }
         onHitTest(xCursor:number,yCursor:number):void{
             for(let j=0; j<this.new_tree_nodes.length; j++){
@@ -78,9 +81,9 @@ namespace Core {
             for(let i=0;i<this.old_tree_nodes.length;i++){
                 this.old_tree_nodes[i].draw();
             }
-            for(let j=0;j<this.new_tree_nodes.length;j++){
-                this.new_tree_nodes[j].draw();
-            }
+            // for(let j=0;j<this.new_tree_nodes.length;j++){
+            //     this.new_tree_nodes[j].draw();
+            // }
         }
         /*
          * @func 计算老树的布局
@@ -132,8 +135,6 @@ namespace Core {
         buildOldTree() {
             if (this.old_build_tree === null) {
                 this.old_build_tree = CScene.buildTree(this.old_tree);
-                console.log(">>>>>>>>>>>>>>>>>old_buld_tree<<<<<<<<<<<<<<<<");
-                console.log(JSON.stringify(this.old_build_tree));
             }
         }
 
@@ -144,8 +145,6 @@ namespace Core {
         buildNewTree() {
             if (this.new_build_tree === null) {
                 this.new_build_tree = CScene.buildTree(this.new_tree);
-                console.log(">>>>>>>>>>>>>>>>>new_buld_tree<<<<<<<<<<<<<<<<");
-                console.log(JSON.stringify(this.new_build_tree));
             }
         }
 
@@ -163,7 +162,7 @@ namespace Core {
         static buildTree(array:any, callback: any = null, parent_id: number = 0, level:number=1,child_node: string = "children"): any {
             let tree = [];
             array.forEach((v, k) => {
-                if (v['parent_id'] === parent_id) {
+                if (v['parent_id'] == parent_id) {
                     delete array[k];
                     let tmp = CScene.is_callable(callback) ? callback.call(this, v) : v;
                     tmp['level'] = level;
@@ -180,35 +179,13 @@ namespace Core {
          * 初始化老树
          */
        initLocalOldTree() {
-           this.old_tree = [
-               {
-                   "id": 1, "parent_id": 0, "name": "一级菜单",
-               }, {
-                   "id": 2, "parent_id": 1, "name": "二级菜单1",
-               }, {
-                   "id": 3, "parent_id": 1, "name": "二级菜单2",
-               }, {
-                   "id": 4, "parent_id": 2, "name": "三级菜单1",
-               }
-           ];
+           this.old_tree = old_tree;
        }
        /*
         * @func 初始化新树
         */
        initLocalNewTree(){
-           this.new_tree = [
-               {
-                   "id": 1, "parent_id": 0, "name": "一级菜单",
-               }, {
-                   "id": 2, "parent_id": 1, "name": "二级菜单1",
-               }, {
-                   "id": 3, "parent_id": 1, "name": "二级菜单2",
-               }, {
-                   "id": 4, "parent_id": 2, "name": "三级菜单1",
-               }, {
-                   "id": 5, "parent_id": 2, "name": "三级菜单2",
-               }
-           ];
+           this.new_tree = new_tree;
        }
     }
 }

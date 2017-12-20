@@ -36,9 +36,9 @@ namespace Core {
             this.x = x;
             this.y = y;
             this.zoom = 1.0;
-            this.font_size = 16;
+            this.font_size = 12;
             this.bg_clr = '#FFF';
-            this.font_family="宋体";
+            this.font_family='"Microsoft YaHei",Helvetica,Arial,sans-serif;';
             this.fg_clr = '#000';
         }
         setFontSize(fontSize:number){
