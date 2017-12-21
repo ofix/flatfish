@@ -22,14 +22,26 @@ namespace Core {
             this.type = TYPE.TEXT;
             this.text = text;
             this.width = 0;
-            this.height = y;
+            this.height = 0;
+            this.measureWidth();
         }
         onHitTest(xCursor:number,yCursor:number):boolean{
             return (xCursor>=this.x && yCursor>=this.y
               && xCursor<=(this.x+this.width) && yCursor <= (this.y+this.height));
         }
+        measureWidth(){
+            ctx.fillStyle = this.fg_clr;
+            ctx.strokeStyle = this.fg_clr;
+            ctx.font = this.font_size + 'px '+this.font_family;
+            ctx.textBaseline = "middle";
+            ctx.textAlign = 'left';
+            this.width = ctx.measureText(this.text).width;
+            this.height = this.font_size;
+            console.log("measure_text:",this.width,this.height);
+        }
         draw() {
-            console.log(this.text,this.x,this.y);
+            this.width = ctx.measureText(this.text).width;
+            this.height = this.font_size;
             ctx.beginPath();
             ctx.translate(0.5, 0.5);
             ctx.fillStyle = this.fg_clr;
