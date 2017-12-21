@@ -50,5 +50,6 @@ namespace FlatFish {
     }
 }
 let ctx:CanvasRenderingContext2D;
+let canvas:HTMLCanvasElement;
 let app = new FlatFish.CApp('flatfish');
 app.run();

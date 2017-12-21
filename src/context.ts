@@ -42,6 +42,7 @@ namespace Core {
             this.render2D = this.canvas.getContext("2d");
             this.clear();
             ctx = this.render2D;
+            canvas = this.canvas;
         }
     }
 }

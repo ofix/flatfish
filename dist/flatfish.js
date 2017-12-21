@@ -112,6 +112,7 @@ var Core;
             this.render2D = this.canvas.getContext("2d");
             this.clear();
             ctx = this.render2D;
+            canvas = this.canvas;
         };
         return Context;
     }());
@@ -161,7 +162,6 @@ var Core;
             ctx.textAlign = 'left';
             this.width = ctx.measureText(this.text).width;
             this.height = this.font_size;
-            console.log("measure_text:", this.width, this.height);
         };
         CTextNode.prototype.draw = function () {
             this.width = ctx.measureText(this.text).width;
@@ -215,6 +215,8 @@ var Core;
             this.layoutOldTree();
             this.layoutNewTree();
             this.calcTreeBound();
+            canvas.height = this.old_tree_bound.y2 + 20;
+            console.log("old_tree_bound", this.old_tree_bound);
         };
         CScene.prototype.calcTreeBound = function ($bOldTree) {
             if ($bOldTree === void 0) { $bOldTree = true; }
@@ -269,25 +271,27 @@ var Core;
         CScene.prototype.layoutOldTree = function () {
             var _this = this;
             this.old_build_tree.forEach(function (v, i) {
-                _this.visitNode(v, i, true);
+                _this.visitNode(v, v['level'], true);
             });
         };
         CScene.prototype.layoutNewTree = function () {
             var _this = this;
             this.new_build_tree.forEach(function (v, i) {
-                _this.visitNode(v, i, false);
+                _this.visitNode(v, v['level'], false);
             });
         };
         CScene.prototype.visitNode = function (v, level, is_old_tree) {
             var _this = this;
             if (is_old_tree === void 0) { is_old_tree = true; }
-            console.log(v['name']);
             this.visit_count++;
             var ySpace = this.Y_SPACE * this.visit_count;
             var xSpace = this.X_SPACE * level;
             var x = (is_old_tree ? this.xOldStart : this.xNewStart) + xSpace;
             var y = (is_old_tree ? this.yOldStart : this.yNewStart) + ySpace;
             var _node = new Core.CTextNode(x, y, v['name']);
+            if (v['name'] == '导游收付款') {
+                console.log('导游收付款', level, xSpace);
+            }
             if (is_old_tree) {
                 this.old_tree_nodes.push(_node);
             }
@@ -296,7 +300,7 @@ var Core;
             }
             if (v['children'] && v['children'].length) {
                 v['children'].forEach(function (sub_v) {
-                    _this.visitNode(sub_v, level + 1, is_old_tree);
+                    _this.visitNode(sub_v, sub_v['level'], is_old_tree);
                 });
             }
         };
@@ -321,7 +325,7 @@ var Core;
             if (child_node === void 0) { child_node = "children"; }
             var tree = [];
             array.forEach(function (v, k) {
-                if (v['parent_id'] == parent_id) {
+                if (v['parent_id'] == parseInt(parent_id)) {
                     delete array[k];
                     var tmp = CScene.is_callable(callback) ? callback.call(_this, v) : v;
                     tmp['level'] = level;
@@ -378,6 +382,7 @@ var FlatFish;
     FlatFish.CApp = CApp;
 })(FlatFish || (FlatFish = {}));
 var ctx;
+var canvas;
 var app = new FlatFish.CApp('flatfish');
 app.run();
 //# sourceMappingURL=flatfish.js.map

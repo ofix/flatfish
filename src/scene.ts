@@ -66,6 +66,8 @@ namespace Core {
            this.layoutOldTree();
            this.layoutNewTree();
            this.calcTreeBound();
+           canvas.height = this.old_tree_bound.y2+20;
+           console.log("old_tree_bound",this.old_tree_bound);
         }
         calcTreeBound($bOldTree:boolean=true){
             let tree:any = $bOldTree?this.old_tree_nodes:this.new_tree_nodes;
@@ -123,7 +125,7 @@ namespace Core {
          */
         layoutOldTree():void{
             this.old_build_tree.forEach((v,i)=>{
-                this.visitNode(v,i,true);
+                this.visitNode(v,v['level'],true);
             });
         }
         /*
@@ -131,7 +133,7 @@ namespace Core {
          */
         layoutNewTree():void{
             this.new_build_tree.forEach((v,i)=>{
-                this.visitNode(v,i,false);
+                this.visitNode(v,v['level'],false);
             });
         }
         //判断是否是数组
@@ -142,13 +144,15 @@ namespace Core {
          * @para is_old_tree 是否是老树
          */
          visitNode(v:any,level:number,is_old_tree:boolean=true):void{
-             console.log(v['name']);
              this.visit_count++;
              let ySpace = this.Y_SPACE * this.visit_count;
              let xSpace = this.X_SPACE * level;
              let x = (is_old_tree ? this.xOldStart : this.xNewStart) + xSpace;
              let y = (is_old_tree ? this.yOldStart : this.yNewStart) + ySpace;
              let _node = new CTextNode(x, y, v['name']);
+             if(v['name'] == '导游收付款'){
+                 console.log('导游收付款',level,xSpace);
+             }
              if (is_old_tree) {
                  this.old_tree_nodes.push(_node);
              } else {
@@ -156,7 +160,7 @@ namespace Core {
              }
             if(v['children'] && v['children'].length){
                 v['children'].forEach((sub_v)=>{
-                    this.visitNode(sub_v,level+1,is_old_tree);
+                    this.visitNode(sub_v,sub_v['level'],is_old_tree);
                 });
             }
         }
@@ -168,6 +172,7 @@ namespace Core {
         buildOldTree() {
             if (this.old_build_tree === null) {
                 this.old_build_tree = CScene.buildTree(this.old_tree);
+                // console.log(JSON.stringify(this.old_build_tree));
             }
         }
 
@@ -192,10 +197,10 @@ namespace Core {
          * @para parent_id 父ID
          * @para child_node 子节点键名
          */
-        static buildTree(array:any, callback: any = null, parent_id: number = 0, level:number=1,child_node: string = "children"): any {
+        static buildTree(array:any, callback: any = null, parent_id: any = 0, level:number=1,child_node: string = "children"): any {
             let tree = [];
             array.forEach((v, k) => {
-                if (v['parent_id'] == parent_id) {
+                if (v['parent_id'] == parseInt(parent_id)) {
                     delete array[k];
                     let tmp = CScene.is_callable(callback) ? callback.call(this, v) : v;
                     tmp['level'] = level;

@@ -41,7 +41,6 @@ namespace Core {
             ctx.textAlign = 'left';
             this.width = ctx.measureText(this.text).width;
             this.height = this.font_size;
-            console.log("measure_text:",this.width,this.height);
         }
         draw() {
             this.width = ctx.measureText(this.text).width;
