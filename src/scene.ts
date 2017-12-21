@@ -17,6 +17,7 @@
 /// <reference path="jquery.d.ts"/>
 /// <reference path="old_tree.ts"/>
 /// <reference path="new_tree.ts"/>
+/// <reference path="bound.ts"/>
 namespace Core {
    export class CScene {
         readonly X_SPACE:number = 20;
@@ -36,6 +37,8 @@ namespace Core {
         protected xNewStart:number;
         protected yNewStart:number;
         protected active_tree:any;
+        protected old_tree_bound:CBound;
+        protected new_tree_bound:CBound;
         constructor() {
             this.old_tree = null;
             this.new_tree = null;
@@ -48,6 +51,8 @@ namespace Core {
             this.yOldStart = 0;
             this.xNewStart = 0;
             this.yNewStart = 0;
+            this.old_tree_bound = new CBound(0,0,0,0);
+            this.new_tree_bound = new CBound(0,0,0,0);
             this.active_tree = this.ACTIVE_NON_TREE;
         }
         bootstrap(){
@@ -60,6 +65,34 @@ namespace Core {
            // 计算每个节点的顺序
            this.layoutOldTree();
            this.layoutNewTree();
+           this.calcTreeBound();
+        }
+        calcTreeBound($bOldTree:boolean=true){
+            let tree:any = $bOldTree?this.old_tree_nodes:this.new_tree_nodes;
+            let x1:number = 100000;
+            let y1:number = 100000;
+            let x2:number = 0;
+            let y2:number = 0;
+            for(let i=0; i<tree.length; i++){
+                let bound:CBound = tree[i].getBound();
+                if(bound.x1 <x1){
+                    x1 = bound.x1;
+                }
+                if(bound.y1 <y1){
+                    y1 = bound.y1;
+                }
+                if(bound.x2 > x2){
+                    x2 = bound.x2;
+                }
+                if(bound.y2 > y2){
+                    y2 = bound.y2;
+                }
+            }
+            if($bOldTree){
+                this.old_tree_bound = new CBound(x1,y1,x2,y2);
+            }else{
+                this.new_tree_bound = new CBound(x1,y1,y2,y2);
+            }
         }
         onHitTest(xCursor:number,yCursor:number):void{
             for(let j=0; j<this.new_tree_nodes.length; j++){

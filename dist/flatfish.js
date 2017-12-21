@@ -119,6 +119,19 @@ var Core;
 })(Core || (Core = {}));
 var Core;
 (function (Core) {
+    var CBound = (function () {
+        function CBound(x1, y1, x2, y2) {
+            this.x1 = x1;
+            this.y1 = y1;
+            this.x2 = x2;
+            this.y2 = y2;
+        }
+        return CBound;
+    }());
+    Core.CBound = CBound;
+})(Core || (Core = {}));
+var Core;
+(function (Core) {
     var CTextNode = (function (_super) {
         __extends(CTextNode, _super);
         function CTextNode(x, y, text) {
@@ -129,15 +142,30 @@ var Core;
             _this.type = Core.TYPE.TEXT;
             _this.text = text;
             _this.width = 0;
-            _this.height = y;
+            _this.height = 0;
+            _this.measureWidth();
             return _this;
         }
         CTextNode.prototype.onHitTest = function (xCursor, yCursor) {
             return (xCursor >= this.x && yCursor >= this.y
                 && xCursor <= (this.x + this.width) && yCursor <= (this.y + this.height));
         };
+        CTextNode.prototype.getBound = function () {
+            return new Core.CBound(this.x, this.y, this.x + this.width, this.y + this.height);
+        };
+        CTextNode.prototype.measureWidth = function () {
+            ctx.fillStyle = this.fg_clr;
+            ctx.strokeStyle = this.fg_clr;
+            ctx.font = this.font_size + 'px ' + this.font_family;
+            ctx.textBaseline = "middle";
+            ctx.textAlign = 'left';
+            this.width = ctx.measureText(this.text).width;
+            this.height = this.font_size;
+            console.log("measure_text:", this.width, this.height);
+        };
         CTextNode.prototype.draw = function () {
-            console.log(this.text, this.x, this.y);
+            this.width = ctx.measureText(this.text).width;
+            this.height = this.font_size;
             ctx.beginPath();
             ctx.translate(0.5, 0.5);
             ctx.fillStyle = this.fg_clr;
@@ -175,6 +203,8 @@ var Core;
             this.yOldStart = 0;
             this.xNewStart = 0;
             this.yNewStart = 0;
+            this.old_tree_bound = new Core.CBound(0, 0, 0, 0);
+            this.new_tree_bound = new Core.CBound(0, 0, 0, 0);
             this.active_tree = this.ACTIVE_NON_TREE;
         }
         CScene.prototype.bootstrap = function () {
@@ -184,6 +214,36 @@ var Core;
             this.buildNewTree();
             this.layoutOldTree();
             this.layoutNewTree();
+            this.calcTreeBound();
+        };
+        CScene.prototype.calcTreeBound = function ($bOldTree) {
+            if ($bOldTree === void 0) { $bOldTree = true; }
+            var tree = $bOldTree ? this.old_tree_nodes : this.new_tree_nodes;
+            var x1 = 100000;
+            var y1 = 100000;
+            var x2 = 0;
+            var y2 = 0;
+            for (var i = 0; i < tree.length; i++) {
+                var bound = tree[i].getBound();
+                if (bound.x1 < x1) {
+                    x1 = bound.x1;
+                }
+                if (bound.y1 < y1) {
+                    y1 = bound.y1;
+                }
+                if (bound.x2 > x2) {
+                    x2 = bound.x2;
+                }
+                if (bound.y2 > y2) {
+                    y2 = bound.y2;
+                }
+            }
+            if ($bOldTree) {
+                this.old_tree_bound = new Core.CBound(x1, y1, x2, y2);
+            }
+            else {
+                this.new_tree_bound = new Core.CBound(x1, y1, y2, y2);
+            }
         };
         CScene.prototype.onHitTest = function (xCursor, yCursor) {
             for (var j = 0; j < this.new_tree_nodes.length; j++) {

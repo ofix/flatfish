@@ -14,6 +14,7 @@
  */
 /// <reference path="node.ts"/>
 /// <reference path="context.ts"/>
+/// <reference path="bound.ts"/>
 namespace Core {
     export class CTextNode extends CNode {
         text: string;
@@ -28,6 +29,9 @@ namespace Core {
         onHitTest(xCursor:number,yCursor:number):boolean{
             return (xCursor>=this.x && yCursor>=this.y
               && xCursor<=(this.x+this.width) && yCursor <= (this.y+this.height));
+        }
+        getBound(){
+            return new CBound(this.x,this.y,this.x+this.width,this.y+this.height);
         }
         measureWidth(){
             ctx.fillStyle = this.fg_clr;
