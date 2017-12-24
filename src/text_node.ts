@@ -33,6 +33,9 @@ namespace Core {
         getBound(){
             return new CBound(this.x,this.y,this.x+this.width,this.y+this.height);
         }
+        getRect(){
+            return new CRect(this.x,this.y,this.width,this.height);
+        }
         measureWidth(){
             ctx.fillStyle = this.fg_clr;
             ctx.strokeStyle = this.fg_clr;

@@ -16,9 +16,10 @@
 /// <reference path="scene.ts"/>
 /// <reference path="jquery.d.ts"/>
 namespace FlatFish {
+    import CScene = Core.CScene;
     export class CApp{
         protected _bootstrap:boolean;
-        protected scene:any;
+        protected scene:CScene;
         protected ctx:any;
         protected errors:string[];
         protected appId:string;
