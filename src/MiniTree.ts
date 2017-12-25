@@ -12,6 +12,7 @@
  * @Date      2017/12/24
  * @Time      15:36
  */
+/// <reference path="./Config.ts"/>
 namespace Core {
     export enum TreeType{
         NORMAL=1,
@@ -25,11 +26,11 @@ namespace Core {
         protected w:number;
         protected h:number;
         protected data;
-        protected nodes:CTextNode[];
+        protected nodes:CMiniTreeNode[];
         protected type:TreeType;
         protected node_count;
         protected max_level:number;
-        protected longest_node:CTextNode;
+        protected longest_node:CMiniTreeNode;
         readonly X_MARGIN:number=20;
         readonly Y_MARGIN:number=30;
         constructor(data:any,x:number=0,y:number=0){
@@ -63,7 +64,6 @@ namespace Core {
            });
            this.w = maxX-this.x;
            this.h = maxY-this.y;
-           console.log(this.w,this.h);
         }
         getWidth():number{
             return this.w;
@@ -100,12 +100,15 @@ namespace Core {
             let xMargin = this.X_MARGIN * level;
             let x = this.x + xMargin;
             let y = this.y + yMargin;
-            let node = new CTextNode(x, y, v['name']);
-            this.nodes.push(node);
-            if(v['children'] && v['children'].length){
+            if(v[Config.key_child] && v[Config.key_child].length){
+                let node = new CMiniTreeNode(x, y, v[Config.key_text],true);
+                this.nodes.push(node);
                 v['children'].forEach((sub_v)=>{
                     this.visitNode(sub_v,sub_v['level']);
                 });
+            }else{
+                let node =new CMiniTreeNode(x,y,v[Config.key_text],false);
+                this.nodes.push(node);
             }
         }
         drawBk():void{

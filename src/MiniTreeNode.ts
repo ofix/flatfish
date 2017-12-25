@@ -12,18 +12,27 @@
  * @Date      2017/12/15
  * @Time      14:31
  */
-/// <reference path="node.ts"/>
-/// <reference path="context.ts"/>
-/// <reference path="bound.ts"/>
+/// <reference path="Node.ts"/>
+/// <reference path="Context.ts"/>
+/// <reference path="Bound.ts"/>
+/// <reference path="ExpandNode.ts"/>
 namespace Core {
-    export class CTextNode extends CNode {
-        text: string;
-        constructor(x: number = 10, y: number = 10, text: string = '') {
+    export class CMiniTreeNode extends CNode {
+        protected text: string;
+        protected isLeaf:boolean;
+        protected expand:ExpandNode;
+        constructor(x: number, y: number, text: string = '',isLeaf:boolean=false) {
             super(x, y);
             this.type = TYPE.TEXT;
             this.text = text;
             this.width = 0;
             this.height = 0;
+            this.isLeaf = isLeaf;
+            if(!this.isLeaf){
+                this.expand = new ExpandNode(this.x,this.y,ExpandState.EXPAND);
+            }else{
+                this.expand = null;
+            }
             this.measureWidth();
         }
         onHitTest(xCursor:number,yCursor:number):boolean{
@@ -46,6 +55,10 @@ namespace Core {
             this.height = this.font_size;
         }
         draw() {
+            if(this.expand){
+                console.log("expand draw");
+                this.expand.draw();
+            }
             this.width = ctx.measureText(this.text).width;
             this.height = this.font_size;
             ctx.beginPath();
@@ -55,7 +68,7 @@ namespace Core {
             ctx.font = this.font_size + 'px '+this.font_family;
             ctx.textBaseline = "middle";
             ctx.textAlign = 'left';
-            ctx.fillText(this.text,this.x,this.y);
+            ctx.fillText(this.text,this.x+20,this.y+20);
             ctx.stroke();
             ctx.closePath();
         }

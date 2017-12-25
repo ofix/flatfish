@@ -12,9 +12,9 @@
  * @Date      2017/12/15
  * @Time      14:31
  */
-/// <reference path="text_node.ts"/>
-/// <reference path="scene.ts"/>
-/// <reference path="jquery.d.ts"/>
+/// <reference path="MiniTreeNode.ts"/>
+/// <reference path="Scene.ts"/>
+/// <reference path="lib/jquery.d.ts"/>
 namespace FlatFish {
     import CScene = Core.CScene;
     export class CApp{

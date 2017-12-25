@@ -13,12 +13,12 @@
  * @Time      14:31
  */
 
-/// <reference path="text_node.ts"/>
-/// <reference path="jquery.d.ts"/>
-/// <reference path="old_tree.ts"/>
-/// <reference path="new_tree.ts"/>
-/// <reference path="bound.ts"/>
-/// <reference path="mini_tree.ts"/>
+/// <reference path="MiniTreeNode.ts"/>
+/// <reference path="lib/jquery.d.ts"/>
+/// <reference path="DataOld.ts"/>
+/// <reference path="DataNew.ts"/>
+/// <reference path="Bound.ts"/>
+/// <reference path="MiniTree.ts"/>
 namespace Core {
    export class CScene {
         readonly ACTIVE_NON_TREE:number = -1;
