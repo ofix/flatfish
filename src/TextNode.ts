@@ -17,33 +17,36 @@
 /// <reference path="Bound.ts"/>
 /// <reference path="ExpandNode.ts"/>
 namespace Core {
-    export class CMiniTreeNode extends CNode {
+    export class CTextNode extends CNode {
         protected text: string;
         protected isLeaf:boolean;
         protected expand:ExpandNode;
+        protected marginLeft:number;
         constructor(x: number, y: number, text: string = '',isLeaf:boolean=false) {
             super(x, y);
             this.type = TYPE.TEXT;
             this.text = text;
-            this.width = 0;
-            this.height = 0;
+            this.w = 0;
+            this.h = 0;
             this.isLeaf = isLeaf;
             if(!this.isLeaf){
                 this.expand = new ExpandNode(this.x,this.y,ExpandState.EXPAND);
             }else{
                 this.expand = null;
             }
+            this.marginLeft = 4;
             this.measureWidth();
         }
         onHitTest(xCursor:number,yCursor:number):boolean{
             return (xCursor>=this.x && yCursor>=this.y
-              && xCursor<=(this.x+this.width) && yCursor <= (this.y+this.height));
+              && xCursor<=(this.x+this.w) && yCursor <= (this.y+this.h));
         }
         getBound(){
-            return new CBound(this.x,this.y,this.x+this.width,this.y+this.height);
-        }
-        getRect(){
-            return new CRect(this.x,this.y,this.width,this.height);
+            if(this.isLeaf) {
+                return new CBound(this.x+26, this.y, this.x+26+this.w, this.y + this.h);
+            }else{
+                return new CBound(this.x+26,this.y,this.x+26+this.w,this.y+this.h);
+            }
         }
         measureWidth(){
             ctx.fillStyle = this.fg_clr;
@@ -51,24 +54,24 @@ namespace Core {
             ctx.font = this.font_size + 'px '+this.font_family;
             ctx.textBaseline = "middle";
             ctx.textAlign = 'left';
-            this.width = ctx.measureText(this.text).width;
-            this.height = this.font_size;
+            this.w = ctx.measureText(this.text).width;
+            this.h = this.font_size;
         }
         draw() {
             if(this.expand){
-                console.log("expand draw");
                 this.expand.draw();
             }
-            this.width = ctx.measureText(this.text).width;
-            this.height = this.font_size;
+            this.w = ctx.measureText(this.text).width;
+            this.h = this.font_size;
             ctx.beginPath();
             ctx.translate(0.5, 0.5);
             ctx.fillStyle = this.fg_clr;
             ctx.strokeStyle = this.fg_clr;
             ctx.font = this.font_size + 'px '+this.font_family;
-            ctx.textBaseline = "middle";
+            ctx.textBaseline = "top";
             ctx.textAlign = 'left';
-            ctx.fillText(this.text,this.x+20,this.y+20);
+            ctx.strokeRect(this.x+20,this.y,this.w,this.h+2);
+            ctx.fillText(this.text,this.x+26,this.y);
             ctx.stroke();
             ctx.closePath();
         }

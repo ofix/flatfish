@@ -19,10 +19,10 @@ class CRect{
     public _h:number;
     constructor(x:number,y:number,w:number,h:number){
         if(w<0){
-            throw new Error('rect width must be greater than 0');
+            throw new Error('rect w must be greater than 0');
         }
         if(h<0){
-            throw new Error('rect height must be greater than 0');
+            throw new Error('rect h must be greater than 0');
         }
         this._x=x;
         this._y=y;
@@ -40,7 +40,7 @@ class CRect{
     }
     set w(width:number){
         if(width<0){
-            throw new Error('rect width must be greater than 0');
+            throw new Error('rect w must be greater than 0');
         }
         this._w=width;
     }
@@ -49,7 +49,7 @@ class CRect{
     }
     set h(height:number){
         if(height<0){
-            throw new Error('rect height must be greater than 0');
+            throw new Error('rect h must be greater than 0');
         }
         this._h=height;
     }

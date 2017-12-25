@@ -12,7 +12,7 @@
  * @Date      2017/12/15
  * @Time      14:31
  */
-/// <reference path="MiniTreeNode.ts"/>
+/// <reference path="TextNode.ts"/>
 /// <reference path="Scene.ts"/>
 /// <reference path="lib/jquery.d.ts"/>
 namespace FlatFish {

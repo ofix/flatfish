@@ -26,11 +26,11 @@ namespace Core {
         protected w:number;
         protected h:number;
         protected data;
-        protected nodes:CMiniTreeNode[];
+        protected nodes:CTextNode[];
         protected type:TreeType;
         protected node_count;
         protected max_level:number;
-        protected longest_node:CMiniTreeNode;
+        protected longest_node:CTextNode;
         readonly X_MARGIN:number=20;
         readonly Y_MARGIN:number=30;
         constructor(data:any,x:number=0,y:number=0){
@@ -81,6 +81,7 @@ namespace Core {
             return this.type;
         }
         draw():void{
+            this.drawBk();
             this.nodes.forEach((v)=>{
                 v.draw();
             });
@@ -101,18 +102,18 @@ namespace Core {
             let x = this.x + xMargin;
             let y = this.y + yMargin;
             if(v[Config.key_child] && v[Config.key_child].length){
-                let node = new CMiniTreeNode(x, y, v[Config.key_text],true);
+                let node = new CTextNode(x, y, v[Config.key_text],false);
                 this.nodes.push(node);
                 v['children'].forEach((sub_v)=>{
                     this.visitNode(sub_v,sub_v['level']);
                 });
             }else{
-                let node =new CMiniTreeNode(x,y,v[Config.key_text],false);
+                let node =new CTextNode(x,y,v[Config.key_text],true);
                 this.nodes.push(node);
             }
         }
         drawBk():void{
-
+            ctx.strokeRect(this.x,this.y,this.w,this.h+2);
         }
     }
 }

@@ -21,8 +21,8 @@ namespace Core {
         protected type: number;
         protected x: number;
         protected y: number;
-        protected width: number;
-        protected height: number;
+        protected w: number;
+        protected h: number;
         protected movable: boolean;
         protected show: boolean;
         protected visible: boolean;
@@ -35,8 +35,8 @@ namespace Core {
             this.type = TYPE.UNKNOWN;
             this.x = x;
             this.y = y;
-            this.zoom = 1.0;
-            this.font_size = 12;
+            this.zoom = Config.zoom;
+            this.font_size = 18;
             this.bg_clr = '#FFF';
             this.font_family='"Microsoft YaHei",Helvetica,Arial,sans-serif;';
             this.fg_clr = '#000';

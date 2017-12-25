@@ -22,9 +22,9 @@ namespace Core{
         protected _state:ExpandState;
         protected _color:string;
         constructor(x:number,y:number,state:ExpandState){
-            super(x,y);
-            this.width = 10*Config.zoom;
-            this.height = 10*Config.zoom;
+            super(x+1,y+3);
+            this.w = 14*Config.zoom;
+            this.h = 14*Config.zoom;
             this._state = state;
             this._color = '#000';
         }
@@ -37,26 +37,34 @@ namespace Core{
         draw(){
             if(this._state == ExpandState.NULL){
                 return;
-            }else if(this._state == ExpandState.EXPAND){
-                ctx.fillStyle = this._color;
-                ctx.moveTo(this.x,this.y);
-                ctx.lineTo(this.x+this.width,this.y);
-                ctx.lineTo(this.x+this.width,this.y+this.height);
-                ctx.lineTo(this.x,this.y+this.height);
-                ctx.moveTo(this.x+this.width/2,this.y);
-                ctx.lineTo(this.x+this.width/2,this.y+this.height);
-                ctx.moveTo(this.x,this.y+this.height/2);
-                ctx.lineTo(this.x+this.width,this.y+this.height/2);
-                ctx.stroke();
             }else if(this._state == ExpandState.COLLAPSE){
-                ctx.fillStyle = this._color;
+                ctx.translate(0.5, 0.5);
+                ctx.beginPath();
+                ctx.strokeStyle = this._color;
                 ctx.moveTo(this.x,this.y);
-                ctx.lineTo(this.x+this.width,this.y);
-                ctx.lineTo(this.x+this.width,this.y+this.height);
-                ctx.lineTo(this.x,this.y+this.height);
-                ctx.moveTo(this.x,this.y+this.height/2);
-                ctx.lineTo(this.x+this.width,this.y+this.height/2);
+                ctx.lineTo(this.x+this.w,this.y);
+                ctx.lineTo(this.x+this.w,this.y+this.h);
+                ctx.lineTo(this.x,this.y+this.h);
+                ctx.lineTo(this.x,this.y);
+                ctx.moveTo(this.x+this.w/2,this.y);
+                ctx.lineTo(this.x+this.w/2,this.y+this.h);
+                ctx.moveTo(this.x,this.y+this.h/2);
+                ctx.lineTo(this.x+this.w,this.y+this.h/2);
                 ctx.stroke();
+                ctx.closePath();
+            }else if(this._state == ExpandState.EXPAND){
+                ctx.translate(0.5, 0.5);
+                ctx.beginPath();
+                ctx.strokeStyle = this._color;
+                ctx.moveTo(this.x,this.y);
+                ctx.lineTo(this.x+this.w,this.y);
+                ctx.lineTo(this.x+this.w,this.y+this.h);
+                ctx.lineTo(this.x,this.y+this.h);
+                ctx.lineTo(this.x,this.y);
+                ctx.moveTo(this.x,this.y+this.h/2);
+                ctx.lineTo(this.x+this.w,this.y+this.h/2);
+                ctx.stroke();
+                ctx.closePath();
             }
 
         }

@@ -13,7 +13,7 @@
  * @Time      14:31
  */
 
-/// <reference path="MiniTreeNode.ts"/>
+/// <reference path="TextNode.ts"/>
 /// <reference path="lib/jquery.d.ts"/>
 /// <reference path="DataOld.ts"/>
 /// <reference path="DataNew.ts"/>
@@ -42,8 +42,8 @@ namespace Core {
             this.new_build_data = null;
             this.old_tree = [];
             this.new_tree = [];
-            this.xOldStart = 0;
-            this.yOldStart = 0;
+            this.xOldStart = 40;
+            this.yOldStart = 40;
             this.xNewStart = 0;
             this.yNewStart = 0;
             this.old_tree_bound = new CBound(0,0,0,0);
@@ -83,7 +83,7 @@ namespace Core {
             if($bOldTree){
                 this.old_tree_bound = new CBound(x1,y1,x2,y2);
             }else{
-                this.new_tree_bound = new CBound(x1,y1,y2,y2);
+                this.new_tree_bound = new CBound(x1,y1,x2,y2);
             }
         }
 
