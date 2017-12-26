@@ -142,9 +142,9 @@ var Core;
     var ExpandNode = (function (_super) {
         __extends(ExpandNode, _super);
         function ExpandNode(x, y, state) {
-            var _this = _super.call(this, x + 1, y + 2) || this;
-            _this.w = 14 * Config.zoom;
-            _this.h = 14 * Config.zoom;
+            var _this = _super.call(this, x + 1, y + 4) || this;
+            _this.w = 10 * Config.zoom;
+            _this.h = 10 * Config.zoom;
             _this._state = state;
             _this._color = '#AAA';
             return _this;
@@ -364,8 +364,9 @@ var Core;
                 v.draw();
             });
         };
-        CMiniTree.prototype.visitNode = function (v, level) {
+        CMiniTree.prototype.visitNode = function (v, level, isLastChild) {
             var _this = this;
+            if (isLastChild === void 0) { isLastChild = false; }
             this.node_count++;
             if (level > this.max_level) {
                 this.max_level = level;
@@ -377,12 +378,17 @@ var Core;
             if (v[Config.key_child] && v[Config.key_child].length) {
                 var node = new Core.CTextNode(x, y, v[Config.key_text], false);
                 this.nodes.push(node);
-                v[Config.key_child].forEach(function (sub_v) {
-                    _this.visitNode(sub_v, sub_v['level']);
+                v[Config.key_child].forEach(function (sub_v, i) {
+                    if (i == v[Config.key_child].length - 1) {
+                        _this.visitNode(sub_v, sub_v['level'], true);
+                    }
+                    else {
+                        _this.visitNode(sub_v, sub_v['level'], false);
+                    }
                 });
             }
             else {
-                var node = new Core.CTextNode(x, y, v[Config.key_text], true);
+                var node = new Core.CTextNode(x, y, v[Config.key_text], true, isLastChild);
                 this.nodes.push(node);
             }
         };

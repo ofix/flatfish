@@ -22,9 +22,9 @@ namespace Core{
         protected _state:ExpandState;
         protected _color:string;
         constructor(x:number,y:number,state:ExpandState){
-            super(x+1,y+2);
-            this.w = 14*Config.zoom;
-            this.h = 14*Config.zoom;
+            super(x+1,y+4);
+            this.w = 10*Config.zoom;
+            this.h = 10*Config.zoom;
             this._state = state;
             this._color = '#AAA';
         }

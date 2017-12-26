@@ -92,7 +92,7 @@ namespace Core {
          * @para level int 当前访问的层级
          * @para is_old_tree 是否是老树
          */
-        protected visitNode(v:any,level:number):void{
+        protected visitNode(v:any,level:number,isLastChild:boolean=false):void{
             this.node_count++;
             if(level>this.max_level){
                 this.max_level = level;
@@ -104,11 +104,15 @@ namespace Core {
             if(v[Config.key_child] && v[Config.key_child].length){
                 let node = new CTextNode(x, y, v[Config.key_text],false);
                 this.nodes.push(node);
-                v[Config.key_child].forEach((sub_v)=>{
-                    this.visitNode(sub_v,sub_v['level']);
+                v[Config.key_child].forEach((sub_v,i)=>{
+                    if(i == v[Config.key_child].length-1){
+                        this.visitNode(sub_v,sub_v['level'],true);
+                    }else {
+                        this.visitNode(sub_v, sub_v['level'],false);
+                    }
                 });
             }else{
-                let node =new CTextNode(x,y,v[Config.key_text],true);
+                let node =new CTextNode(x,y,v[Config.key_text],true,isLastChild);
                 this.nodes.push(node);
             }
         }
