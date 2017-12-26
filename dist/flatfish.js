@@ -146,7 +146,7 @@ var Core;
             _this.w = 14 * Config.zoom;
             _this.h = 14 * Config.zoom;
             _this._state = state;
-            _this._color = '#000';
+            _this._color = '#AAA';
             return _this;
         }
         Object.defineProperty(ExpandNode.prototype, "state", {
@@ -204,15 +204,17 @@ var Core;
 (function (Core) {
     var CTextNode = (function (_super) {
         __extends(CTextNode, _super);
-        function CTextNode(x, y, text, isLeaf) {
+        function CTextNode(x, y, text, isLeaf, isLastChild) {
             if (text === void 0) { text = ''; }
             if (isLeaf === void 0) { isLeaf = false; }
+            if (isLastChild === void 0) { isLastChild = false; }
             var _this = _super.call(this, x, y) || this;
             _this.type = Core.TYPE.TEXT;
             _this.text = text;
             _this.w = 0;
             _this.h = 0;
             _this.isLeaf = isLeaf;
+            _this.isLastChild = isLastChild;
             if (!_this.isLeaf) {
                 _this.expand = new Core.ExpandNode(_this.x, _this.y, Core.ExpandState.EXPAND);
             }
@@ -229,10 +231,10 @@ var Core;
         };
         CTextNode.prototype.getBound = function () {
             if (this.isLeaf) {
-                return new Core.CBound(this.x + 26, this.y, this.x + 26 + this.w, this.y + this.h);
+                return new Core.CBound(this.x + 22, this.y, this.x + 22 + this.w, this.y + this.h);
             }
             else {
-                return new Core.CBound(this.x + 26, this.y, this.x + 26 + this.w, this.y + this.h);
+                return new Core.CBound(this.x + 22, this.y, this.x + 22 + this.w, this.y + this.h);
             }
         };
         CTextNode.prototype.measureWidth = function () {
@@ -243,6 +245,21 @@ var Core;
             ctx.textAlign = 'left';
             this.w = ctx.measureText(this.text).width;
             this.h = this.font_size;
+        };
+        CTextNode.prototype.drawLeafDash = function (x, y) {
+            var xCenter = x + 2;
+            var yCenter = y + this.h / 2;
+            ctx.save();
+            ctx.fillStyle = '#BBB';
+            if (this.isLastChild) {
+                drawDashLine(ctx, xCenter, yCenter, xCenter + 12, yCenter, 3);
+                drawDashLine(ctx, xCenter, yCenter - 15, xCenter, yCenter, 3);
+            }
+            else {
+                drawDashLine(ctx, xCenter, yCenter, xCenter + 12, yCenter, 3);
+                drawDashLine(ctx, xCenter, yCenter - 15, xCenter, yCenter + 15, 3);
+            }
+            ctx.restore();
         };
         CTextNode.prototype.draw = function () {
             if (this.expand) {
@@ -257,8 +274,13 @@ var Core;
             ctx.font = this.font_size + 'px ' + this.font_family;
             ctx.textBaseline = "top";
             ctx.textAlign = 'left';
-            ctx.strokeRect(this.x + 26, this.y, this.w, this.h);
-            ctx.fillText(this.text, this.x + 26, this.y);
+            if (this.isLeaf) {
+                this.drawLeafDash(this.x, this.y);
+                ctx.fillText(this.text, this.x + 16, this.y);
+            }
+            else {
+                ctx.fillText(this.text, this.x + 22, this.y);
+            }
             ctx.stroke();
             ctx.closePath();
             ctx.restore();
@@ -289,7 +311,7 @@ var Core;
     })(TreeType = Core.TreeType || (Core.TreeType = {}));
     var CMiniTree = (function () {
         function CMiniTree(data, x, y) {
-            this.X_MARGIN = 20;
+            this.X_MARGIN = 22;
             this.Y_MARGIN = 30;
             this.x = x;
             this.y = y;
@@ -338,7 +360,6 @@ var Core;
             return this.type;
         };
         CMiniTree.prototype.draw = function () {
-            this.drawBk();
             this.nodes.forEach(function (v) {
                 v.draw();
             });
@@ -587,4 +608,19 @@ var CRect = (function () {
     });
     return CRect;
 }());
+function drawDashLine(ctx, x1, y1, x2, y2, dashLength) {
+    var dashLen = (dashLength === undefined) ? 5 : dashLength;
+    var xPos = x2 - x1;
+    var yPos = y2 - y1;
+    var numDashes = Math.floor(Math.sqrt(xPos * xPos + yPos * yPos) / dashLen);
+    for (var i = 0; i < numDashes; i++) {
+        if (i % 2 === 0) {
+            ctx.moveTo(x1 + (xPos / numDashes) * i, y1 + (yPos / numDashes) * i);
+        }
+        else {
+            ctx.lineTo(x1 + (xPos / numDashes) * i, y1 + (yPos / numDashes) * i);
+        }
+    }
+    ctx.stroke();
+}
 //# sourceMappingURL=flatfish.js.map

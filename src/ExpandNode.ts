@@ -26,7 +26,7 @@ namespace Core{
             this.w = 14*Config.zoom;
             this.h = 14*Config.zoom;
             this._state = state;
-            this._color = '#000';
+            this._color = '#AAA';
         }
         get state():ExpandState{
             return this._state;

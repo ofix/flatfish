@@ -31,7 +31,7 @@ namespace Core {
         protected node_count;
         protected max_level:number;
         protected longest_node:CTextNode;
-        readonly X_MARGIN:number=20;
+        readonly X_MARGIN:number=22;
         readonly Y_MARGIN:number=30;
         constructor(data:any,x:number,y:number){
             this.x=x;
@@ -81,7 +81,7 @@ namespace Core {
             return this.type;
         }
         draw():void{
-            this.drawBk();
+            // this.drawBk();
             this.nodes.forEach((v)=>{
                 v.draw();
             });
