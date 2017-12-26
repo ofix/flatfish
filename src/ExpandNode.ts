@@ -39,7 +39,6 @@ namespace Core{
                 return;
             }else if(this._state == ExpandState.COLLAPSE){
                 ctx.save();
-                ctx.translate(0.5, 0.5);
                 ctx.beginPath();
                 ctx.strokeStyle = this._color;
                 ctx.moveTo(this.x,this.y);
@@ -56,7 +55,6 @@ namespace Core{
                 ctx.restore();
             }else if(this._state == ExpandState.EXPAND){
                 ctx.save();
-                ctx.translate(0.5, 0.5);
                 ctx.beginPath();
                 ctx.strokeStyle = this._color;
                 ctx.moveTo(this.x,this.y);

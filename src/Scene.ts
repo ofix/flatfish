@@ -88,6 +88,7 @@ namespace Core {
         }
 
         draw(){
+            ctx.translate(0.5, 0.5);
             this.old_tree.forEach((v)=>{
                v.draw();
             });

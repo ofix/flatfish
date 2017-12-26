@@ -165,7 +165,6 @@ var Core;
             }
             else if (this._state == ExpandState.COLLAPSE) {
                 ctx.save();
-                ctx.translate(0.5, 0.5);
                 ctx.beginPath();
                 ctx.strokeStyle = this._color;
                 ctx.moveTo(this.x, this.y);
@@ -183,7 +182,6 @@ var Core;
             }
             else if (this._state == ExpandState.EXPAND) {
                 ctx.save();
-                ctx.translate(0.5, 0.5);
                 ctx.beginPath();
                 ctx.strokeStyle = this._color;
                 ctx.moveTo(this.x, this.y);
@@ -254,7 +252,6 @@ var Core;
             this.h = this.font_size;
             ctx.save();
             ctx.beginPath();
-            ctx.translate(0.5, 0.5);
             ctx.fillStyle = this.fg_clr;
             ctx.strokeStyle = this.fg_clr;
             ctx.font = this.font_size + 'px ' + this.font_family;
@@ -434,6 +431,7 @@ var Core;
             }
         };
         CScene.prototype.draw = function () {
+            ctx.translate(0.5, 0.5);
             this.old_tree.forEach(function (v) {
                 v.draw();
             });

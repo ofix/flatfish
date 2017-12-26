@@ -65,7 +65,6 @@ namespace Core {
             this.h = this.font_size;
             ctx.save();
             ctx.beginPath();
-            ctx.translate(0.5, 0.5);
             ctx.fillStyle = this.fg_clr;
             ctx.strokeStyle = this.fg_clr;
             ctx.font = this.font_size + 'px '+this.font_family;
