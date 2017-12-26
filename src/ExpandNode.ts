@@ -38,6 +38,7 @@ namespace Core{
             if(this._state == ExpandState.NULL){
                 return;
             }else if(this._state == ExpandState.COLLAPSE){
+                ctx.save();
                 ctx.translate(0.5, 0.5);
                 ctx.beginPath();
                 ctx.strokeStyle = this._color;
@@ -52,7 +53,9 @@ namespace Core{
                 ctx.lineTo(this.x+this.w,this.y+this.h/2);
                 ctx.stroke();
                 ctx.closePath();
+                ctx.restore();
             }else if(this._state == ExpandState.EXPAND){
+                ctx.save();
                 ctx.translate(0.5, 0.5);
                 ctx.beginPath();
                 ctx.strokeStyle = this._color;
@@ -65,6 +68,7 @@ namespace Core{
                 ctx.lineTo(this.x+this.w,this.y+this.h/2);
                 ctx.stroke();
                 ctx.closePath();
+                ctx.restore();
             }
 
         }

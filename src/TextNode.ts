@@ -63,6 +63,7 @@ namespace Core {
             }
             this.w = ctx.measureText(this.text).width;
             this.h = this.font_size;
+            ctx.save();
             ctx.beginPath();
             ctx.translate(0.5, 0.5);
             ctx.fillStyle = this.fg_clr;
@@ -74,6 +75,7 @@ namespace Core {
             ctx.fillText(this.text,this.x+26,this.y);
             ctx.stroke();
             ctx.closePath();
+            ctx.restore();
         }
     }
 }

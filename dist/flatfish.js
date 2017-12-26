@@ -164,6 +164,7 @@ var Core;
                 return;
             }
             else if (this._state == ExpandState.COLLAPSE) {
+                ctx.save();
                 ctx.translate(0.5, 0.5);
                 ctx.beginPath();
                 ctx.strokeStyle = this._color;
@@ -178,8 +179,10 @@ var Core;
                 ctx.lineTo(this.x + this.w, this.y + this.h / 2);
                 ctx.stroke();
                 ctx.closePath();
+                ctx.restore();
             }
             else if (this._state == ExpandState.EXPAND) {
+                ctx.save();
                 ctx.translate(0.5, 0.5);
                 ctx.beginPath();
                 ctx.strokeStyle = this._color;
@@ -192,6 +195,7 @@ var Core;
                 ctx.lineTo(this.x + this.w, this.y + this.h / 2);
                 ctx.stroke();
                 ctx.closePath();
+                ctx.restore();
             }
         };
         return ExpandNode;
@@ -248,6 +252,7 @@ var Core;
             }
             this.w = ctx.measureText(this.text).width;
             this.h = this.font_size;
+            ctx.save();
             ctx.beginPath();
             ctx.translate(0.5, 0.5);
             ctx.fillStyle = this.fg_clr;
@@ -259,6 +264,7 @@ var Core;
             ctx.fillText(this.text, this.x + 26, this.y);
             ctx.stroke();
             ctx.closePath();
+            ctx.restore();
         };
         return CTextNode;
     }(Core.CNode));
@@ -286,8 +292,6 @@ var Core;
     })(TreeType = Core.TreeType || (Core.TreeType = {}));
     var CMiniTree = (function () {
         function CMiniTree(data, x, y) {
-            if (x === void 0) { x = 0; }
-            if (y === void 0) { y = 0; }
             this.X_MARGIN = 20;
             this.Y_MARGIN = 30;
             this.x = x;
@@ -303,7 +307,7 @@ var Core;
             this.init();
         }
         CMiniTree.prototype.init = function () {
-            this.visitNode(this.data, 0);
+            this.visitNode(this.data, 1);
             this.bound();
         };
         CMiniTree.prototype.bound = function () {
@@ -349,13 +353,13 @@ var Core;
                 this.max_level = level;
             }
             var yMargin = this.Y_MARGIN * this.node_count;
-            var xMargin = this.X_MARGIN * level;
+            var xMargin = this.X_MARGIN * (level - 1);
             var x = this.x + xMargin;
             var y = this.y + yMargin;
             if (v[Config.key_child] && v[Config.key_child].length) {
                 var node = new Core.CTextNode(x, y, v[Config.key_text], false);
                 this.nodes.push(node);
-                v['children'].forEach(function (sub_v) {
+                v[Config.key_child].forEach(function (sub_v) {
                     _this.visitNode(sub_v, sub_v['level']);
                 });
             }
@@ -365,7 +369,9 @@ var Core;
             }
         };
         CMiniTree.prototype.drawBk = function () {
+            ctx.save();
             ctx.strokeRect(this.x, this.y, this.w, this.h + 2);
+            ctx.restore();
         };
         return CMiniTree;
     }());
@@ -382,8 +388,8 @@ var Core;
             this.new_build_data = null;
             this.old_tree = [];
             this.new_tree = [];
-            this.xOldStart = 40;
-            this.yOldStart = 40;
+            this.xOldStart = 100;
+            this.yOldStart = 0;
             this.xNewStart = 0;
             this.yNewStart = 0;
             this.old_tree_bound = new Core.CBound(0, 0, 0, 0);
@@ -446,9 +452,12 @@ var Core;
             }
             else {
                 this.new_build_data = CScene.buildTree(this.new_data);
+                var miniX_2 = this.xNewStart;
+                var miniY_2 = this.yNewStart;
                 this.new_build_data.forEach(function (v) {
-                    var tree = new Core.CMiniTree(v);
+                    var tree = new Core.CMiniTree(v, miniX_2, miniY_2);
                     _this.new_tree.push(tree);
+                    miniY_2 = tree.getBound().y2 + 30;
                 });
             }
         };

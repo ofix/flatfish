@@ -33,7 +33,7 @@ namespace Core {
         protected longest_node:CTextNode;
         readonly X_MARGIN:number=20;
         readonly Y_MARGIN:number=30;
-        constructor(data:any,x:number=0,y:number=0){
+        constructor(data:any,x:number,y:number){
             this.x=x;
             this.y=y;
             this.w=0;
@@ -47,7 +47,7 @@ namespace Core {
             this.init();
         }
         init(){
-            this.visitNode(this.data,0);
+            this.visitNode(this.data,1);
             this.bound();
         }
        protected bound(){
@@ -98,13 +98,13 @@ namespace Core {
                 this.max_level = level;
             }
             let yMargin = this.Y_MARGIN * this.node_count;
-            let xMargin = this.X_MARGIN * level;
+            let xMargin = this.X_MARGIN * (level-1);
             let x = this.x + xMargin;
             let y = this.y + yMargin;
             if(v[Config.key_child] && v[Config.key_child].length){
                 let node = new CTextNode(x, y, v[Config.key_text],false);
                 this.nodes.push(node);
-                v['children'].forEach((sub_v)=>{
+                v[Config.key_child].forEach((sub_v)=>{
                     this.visitNode(sub_v,sub_v['level']);
                 });
             }else{
@@ -113,7 +113,9 @@ namespace Core {
             }
         }
         drawBk():void{
+            ctx.save();
             ctx.strokeRect(this.x,this.y,this.w,this.h+2);
+            ctx.restore();
         }
     }
 }

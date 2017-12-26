@@ -42,8 +42,8 @@ namespace Core {
             this.new_build_data = null;
             this.old_tree = [];
             this.new_tree = [];
-            this.xOldStart = 40;
-            this.yOldStart = 40;
+            this.xOldStart = 100;
+            this.yOldStart = 0;
             this.xNewStart = 0;
             this.yNewStart = 0;
             this.old_tree_bound = new CBound(0,0,0,0);
@@ -109,9 +109,12 @@ namespace Core {
                 });
             }else{
                 this.new_build_data = CScene.buildTree(this.new_data);
+                let miniX:number = this.xNewStart;
+                let miniY:number = this.yNewStart;
                 this.new_build_data.forEach((v)=>{
-                    let tree:CMiniTree = new CMiniTree(v);
+                    let tree:CMiniTree = new CMiniTree(v,miniX,miniY);
                     this.new_tree.push(tree);
+                    miniY = tree.getBound().y2+30;
                 });
             }
         }
