@@ -142,7 +142,7 @@ var Core;
     var ExpandNode = (function (_super) {
         __extends(ExpandNode, _super);
         function ExpandNode(x, y, state) {
-            var _this = _super.call(this, x + 1, y + 3) || this;
+            var _this = _super.call(this, x + 1, y + 2) || this;
             _this.w = 14 * Config.zoom;
             _this.h = 14 * Config.zoom;
             _this._state = state;
@@ -257,7 +257,7 @@ var Core;
             ctx.font = this.font_size + 'px ' + this.font_family;
             ctx.textBaseline = "top";
             ctx.textAlign = 'left';
-            ctx.strokeRect(this.x + 20, this.y, this.w, this.h + 2);
+            ctx.strokeRect(this.x + 26, this.y, this.w, this.h);
             ctx.fillText(this.text, this.x + 26, this.y);
             ctx.stroke();
             ctx.closePath();
@@ -349,7 +349,7 @@ var Core;
             if (level > this.max_level) {
                 this.max_level = level;
             }
-            var yMargin = this.Y_MARGIN * this.node_count;
+            var yMargin = this.Y_MARGIN * (this.node_count - 1);
             var xMargin = this.X_MARGIN * (level - 1);
             var x = this.x + xMargin;
             var y = this.y + yMargin;
@@ -386,7 +386,7 @@ var Core;
             this.old_tree = [];
             this.new_tree = [];
             this.xOldStart = 100;
-            this.yOldStart = 0;
+            this.yOldStart = 20;
             this.xNewStart = 0;
             this.yNewStart = 0;
             this.old_tree_bound = new Core.CBound(0, 0, 0, 0);

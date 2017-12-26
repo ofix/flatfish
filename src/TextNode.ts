@@ -70,7 +70,7 @@ namespace Core {
             ctx.font = this.font_size + 'px '+this.font_family;
             ctx.textBaseline = "top";
             ctx.textAlign = 'left';
-            ctx.strokeRect(this.x+20,this.y,this.w,this.h+2);
+            ctx.strokeRect(this.x+26,this.y,this.w,this.h);
             ctx.fillText(this.text,this.x+26,this.y);
             ctx.stroke();
             ctx.closePath();

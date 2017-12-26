@@ -97,7 +97,7 @@ namespace Core {
             if(level>this.max_level){
                 this.max_level = level;
             }
-            let yMargin = this.Y_MARGIN * this.node_count;
+            let yMargin = this.Y_MARGIN * (this.node_count-1);
             let xMargin = this.X_MARGIN * (level-1);
             let x = this.x + xMargin;
             let y = this.y + yMargin;

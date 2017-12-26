@@ -43,7 +43,7 @@ namespace Core {
             this.old_tree = [];
             this.new_tree = [];
             this.xOldStart = 100;
-            this.yOldStart = 0;
+            this.yOldStart = 20;
             this.xNewStart = 0;
             this.yNewStart = 0;
             this.old_tree_bound = new CBound(0,0,0,0);
